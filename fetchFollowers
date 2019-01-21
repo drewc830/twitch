@@ -1,0 +1,30 @@
+import json
+import sys
+import csv
+import urllib.request
+
+
+counter = 0
+f = open('followers.csv','w',encoding='utf-8',newline="\n")
+mywriter = csv.writer(f,dialect='excel',quoting=csv.QUOTE_MINIMAL)
+mywriter.writerow(['User Name'])
+url = "https://api.twitch.tv/helix/users/follows?to_id=6663444&pagination&first=100" 
+req = urllib.request.Request(url)
+req.add_header("Client-ID","72v2al6ufhz1x2a32ynl68i6j8vku3")
+response = str(urllib.request.urlopen(req).read().decode('utf-8'))
+myjson = json.loads(response)
+
+while (myjson['follows'] > 0]):
+	for follower in myjson['follows']:
+		user_name = follower['from_name']	
+		print([str(user_name)])
+	pag = myjson['pagination']['cursor']
+	url ="https://api.twitch.tv/helix/users/follows?to_id=6663444&pagination&first=100&after="+ pag
+	req = urllib.request.Request(url)
+	req.add_header("Client-ID","72v2al6ufhz1x2a32ynl68i6j8vku3")
+	response = str(urllib.request.urlopen(req).read().decode('utf-8'))
+	myjson = json.loads(response)
+	counter += 100
+	print(counter)
+	
+f.close
